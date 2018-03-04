@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前段时间使用了Jekins在阿里云服务器上搭建了一个建议的自动化Web项目部署服务，搭配Maven、Git全家桶，没有直接Jekins构建一个Maven项目，而是构建了一个「自由风格」的项目，多了一些配置，也多了更多的灵活性，简单历史发布项目做了备份。使用了一段时间后，真的是相识恨晚。 1.环境搭建、Jekins安装关于这些环境搭建，网上资料很多，这里就偷下懒不做详细记录了。：）  JDK Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins自动化部署Web项目">
+<meta property="og:url" content="http://yoursite.com/2017/12/02/Jenkins自动化部署Web项目/index.html">
+<meta property="og:site_name" content="500 Miles">
+<meta property="og:description" content="前段时间使用了Jekins在阿里云服务器上搭建了一个建议的自动化Web项目部署服务，搭配Maven、Git全家桶，没有直接Jekins构建一个Maven项目，而是构建了一个「自由风格」的项目，多了一些配置，也多了更多的灵活性，简单历史发布项目做了备份。使用了一段时间后，真的是相识恨晚。 1.环境搭建、Jekins安装关于这些环境搭建，网上资料很多，这里就偷下懒不做详细记录了。：）  JDK Git">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://huichi.b0.upaiyun.com/1519903731168.jpg">
+<meta property="og:image" content="https://images2015.cnblogs.com/blog/997850/201703/997850-20170313173524995-2058549403.png">
+<meta property="og:image" content="http://huichi.b0.upaiyun.com/1519903218690.jpg">
+<meta property="og:image" content="http://huichi.b0.upaiyun.com/1519903578639.jpg">
+<meta property="og:image" content="http://huichi.b0.upaiyun.com/1519903993910.jpg">
+<meta property="og:image" content="http://huichi.b0.upaiyun.com/1519904765463.jpg">
+<meta property="og:image" content="http://huichi.b0.upaiyun.com/1519905219022.jpg">
+<meta property="og:updated_time" content="2018-03-02T09:03:46.347Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jenkins自动化部署Web项目">
+<meta name="twitter:description" content="前段时间使用了Jekins在阿里云服务器上搭建了一个建议的自动化Web项目部署服务，搭配Maven、Git全家桶，没有直接Jekins构建一个Maven项目，而是构建了一个「自由风格」的项目，多了一些配置，也多了更多的灵活性，简单历史发布项目做了备份。使用了一段时间后，真的是相识恨晚。 1.环境搭建、Jekins安装关于这些环境搭建，网上资料很多，这里就偷下懒不做详细记录了。：）  JDK Git">
+<meta name="twitter:image" content="http://huichi.b0.upaiyun.com/1519903731168.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/02/Jenkins自动化部署Web项目/"/>
+
+
+
+
+
+  <title>Jenkins自动化部署Web项目 | 500 Miles</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">500 Miles</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Go for in.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/02/Jenkins自动化部署Web项目/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sush">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="500 Miles">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Jenkins自动化部署Web项目</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-02T00:07:26+08:00">
+                2017-12-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前段时间使用了Jekins在阿里云服务器上搭建了一个建议的自动化Web项目部署服务，搭配Maven、Git全家桶，没有直接Jekins构建一个Maven项目，而是构建了一个「自由风格」的项目，多了一些配置，也多了更多的灵活性，简单历史发布项目做了备份。使用了一段时间后，真的是相识恨晚。</p>
+<h2 id="1-环境搭建、Jekins安装"><a href="#1-环境搭建、Jekins安装" class="headerlink" title="1.环境搭建、Jekins安装"></a>1.环境搭建、Jekins安装</h2><p><strong>关于这些环境搭建，网上资料很多，这里就偷下懒不做详细记录了。：）</strong></p>
+<ul>
+<li>JDK</li>
+<li>Git</li>
+<li>Maven</li>
+<li>Tomcat</li>
+</ul>
+<p>分别使用「java -version」、「git –version」、「mvn -version」来最终检查对应环境是否配置成功。Tomcat修改conf/server.xml文件中Connector port未占用端口，同时，添加URIEncoding=”UTF-8”配置。</p>
+<h2 id="2-Jekins部署"><a href="#2-Jekins部署" class="headerlink" title="2.Jekins部署"></a>2.Jekins部署</h2><p>将下载好的Jekins的war放入Tomcat下的webapp路径下，启动Tomcat，浏览器访问服务器对应ip:port，启动成功。</p>
+<p><img src="http://huichi.b0.upaiyun.com/1519903731168.jpg" alt="jekins started"></p>
+<h2 id="3-插件安装"><a href="#3-插件安装" class="headerlink" title="3.插件安装"></a>3.插件安装</h2><p>进入「系统管理-管理插件」下，下载最新的对应的插件，安装完成后，重启Jekins。</p>
+<ul>
+<li>GIT Plugins</li>
+<li>Deploy to container Plugin</li>
+</ul>
+<h2 id="4-Jekins配置"><a href="#4-Jekins配置" class="headerlink" title="4.Jekins配置"></a>4.Jekins配置</h2><p><strong>JDK、Git、Maven全局配置</strong></p>
+<p><img src="https://images2015.cnblogs.com/blog/997850/201703/997850-20170313173524995-2058549403.png" alt="GlobalToolConfiguration"><br><img src="http://huichi.b0.upaiyun.com/1519903218690.jpg" alt="Git&amp;JDK Configuration"><br><img src="http://huichi.b0.upaiyun.com/1519903578639.jpg" alt=""></p>
+<h2 id="5-项目创建"><a href="#5-项目创建" class="headerlink" title="5.项目创建"></a>5.项目创建</h2><p>这里构建了一个「FreeStyle」的项目，可以更自由地进行构建操作。项目配置主要流程如下图示，相较于构建一个Maven项目，主要操作在「Exce Command」的脚本中。</p>
+<p><img src="http://huichi.b0.upaiyun.com/1519903993910.jpg" alt="Create Project"><br><img src="http://huichi.b0.upaiyun.com/1519904765463.jpg" alt=""><br><img src="http://huichi.b0.upaiyun.com/1519905219022.jpg" alt=""></p>
+<h3 id="脚本解析"><a href="#脚本解析" class="headerlink" title="脚本解析"></a>脚本解析</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"># 1. 刷新环境变量</span><br><span class="line">source  /etc/profile</span><br><span class="line"></span><br><span class="line"># 2. 进入本地git仓库，更新git最新代码，并切换到master分支</span><br><span class="line">#/srv/business为项目所在的本地Git版本仓库，首次使用需要手动创建初始化</span><br><span class="line">#执行：git init、git add remote add original &apos;git项目地址&apos;</span><br><span class="line">cd /srv/business</span><br><span class="line">git fetch</span><br><span class="line">git checkout -f origin/master</span><br><span class="line"></span><br><span class="line"># 3. maven打包</span><br><span class="line">mvn clean</span><br><span class="line">mvn package</span><br><span class="line"></span><br><span class="line"># 4. war备份</span><br><span class="line">backupFile=&quot;/mnt/backup/`date +%F`-jenkins-ROOT.war&quot;</span><br><span class="line">runningFile=&quot;/mnt/ziyou-business/webapps/ROOT.war&quot;</span><br><span class="line">runningDir=&quot;/mnt/ziyou-business/webapps/ROOT/&quot;</span><br><span class="line"></span><br><span class="line">if [ ! -f &quot;$backupFile&quot; ]; then</span><br><span class="line"> cp &quot;$runningFile&quot; &quot;$backupFile&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># 5. 查找项目进程id，kill项目进程</span><br><span class="line">dxzz_pid=`jps -v |grep /mnt/ziyou-business/ |awk &apos;&#123;print $1&#125;&apos;`</span><br><span class="line">echo &quot;pid is $&#123;dxzz_pid&#125;&quot;</span><br><span class="line">if [ -n &quot;$dxzz_pid&quot; ];then</span><br><span class="line">     kill $dxzz_pid</span><br><span class="line">     process_count=`jps -v |grep /mnt/ziyou-business/ |wc -l`</span><br><span class="line">     while [ $process_count -ne 0 ]</span><br><span class="line">     do</span><br><span class="line">        sleep 2</span><br><span class="line">        process_count=`jps -v |grep /mnt/ziyou-business/ |wc -l`</span><br><span class="line">     done</span><br><span class="line">     echo &apos;business is stoped&apos;</span><br><span class="line">else</span><br><span class="line">     echo &apos;cann`t find business&apos;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># 6. war拷贝</span><br><span class="line">rm -rf &quot;$runningFile&quot;</span><br><span class="line">rm -rf &quot;$runningDir&quot;</span><br><span class="line">cp /srv/business/target/business.war &quot;$runningFile&quot;</span><br><span class="line"></span><br><span class="line"># 7. 启动项目</span><br><span class="line">BUILD_ID=DONTKILLME</span><br><span class="line">/mnt/ziyou-business/bin/startup.sh</span><br><span class="line"></span><br><span class="line">#注：/mnt/ziyou-business为项目Tomcat路径地址</span><br></pre></td></tr></table></figure>
+<p><strong>另外，需要在Jekins所在服务器中生成对应Git账号的ssh-key添加到git账号/项目SSH公钥管理页面中，当然，也可以进行配置ssh免密钥登录。</strong></p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>配置成功后，若环境搭建没有问题，面板左侧构建执行状态会提示执行成功。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/20/Nginx使用记录/" rel="next" title="Nginx使用心得">
+                <i class="fa fa-chevron-left"></i> Nginx使用心得
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/02/ButterKnife分析与实现/" rel="prev" title="ButterKnife分析与实现">
+                ButterKnife分析与实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Sush" />
+            
+              <p class="site-author-name" itemprop="name">Sush</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-环境搭建、Jekins安装"><span class="nav-number">1.</span> <span class="nav-text">1.环境搭建、Jekins安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Jekins部署"><span class="nav-number">2.</span> <span class="nav-text">2.Jekins部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-插件安装"><span class="nav-number">3.</span> <span class="nav-text">3.插件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Jekins配置"><span class="nav-number">4.</span> <span class="nav-text">4.Jekins配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-项目创建"><span class="nav-number">5.</span> <span class="nav-text">5.项目创建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#脚本解析"><span class="nav-number">5.1.</span> <span class="nav-text">脚本解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行"><span class="nav-number">6.</span> <span class="nav-text">运行</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sush</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

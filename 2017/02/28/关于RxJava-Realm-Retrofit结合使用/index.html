@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,RxJava,Realm,Retrofit," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="关于RxJava、Retrofit、Realm、单Activity多Fragment、多进程等的实践。项目code中有实际项目使用的部分源码。   RxJava学习了RxJava，懂得了很多道理，但依旧不会用？让我们先来举几个实际常用的例子。 线程切换举个例子，我们想从服务端获取一个图片链接(耗时操作)，然后使用该链接生成一个二维码图片（耗时操作），然后想在UI主线程显示出来。 12345678">
+<meta name="keywords" content="Android,RxJava,Realm,Retrofit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于RxJava-Realm-Retrofit结合使用">
+<meta property="og:url" content="http://yoursite.com/2017/02/28/关于RxJava-Realm-Retrofit结合使用/index.html">
+<meta property="og:site_name" content="500 Miles">
+<meta property="og:description" content="关于RxJava、Retrofit、Realm、单Activity多Fragment、多进程等的实践。项目code中有实际项目使用的部分源码。   RxJava学习了RxJava，懂得了很多道理，但依旧不会用？让我们先来举几个实际常用的例子。 线程切换举个例子，我们想从服务端获取一个图片链接(耗时操作)，然后使用该链接生成一个二维码图片（耗时操作），然后想在UI主线程显示出来。 12345678">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/magicsu/android-samples/blob/master/screenshot/Intro.jpg?raw=true">
+<meta property="og:image" content="http://img1.tuicool.com/uAjQ7fm.png!web">
+<meta property="og:updated_time" content="2018-03-04T00:50:52.350Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于RxJava-Realm-Retrofit结合使用">
+<meta name="twitter:description" content="关于RxJava、Retrofit、Realm、单Activity多Fragment、多进程等的实践。项目code中有实际项目使用的部分源码。   RxJava学习了RxJava，懂得了很多道理，但依旧不会用？让我们先来举几个实际常用的例子。 线程切换举个例子，我们想从服务端获取一个图片链接(耗时操作)，然后使用该链接生成一个二维码图片（耗时操作），然后想在UI主线程显示出来。 12345678">
+<meta name="twitter:image" content="https://github.com/magicsu/android-samples/blob/master/screenshot/Intro.jpg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/28/关于RxJava-Realm-Retrofit结合使用/"/>
+
+
+
+
+
+  <title>关于RxJava-Realm-Retrofit结合使用 | 500 Miles</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">500 Miles</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Go for in.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/关于RxJava-Realm-Retrofit结合使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sush">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="500 Miles">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于RxJava-Realm-Retrofit结合使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-28T08:49:16+08:00">
+                2017-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>关于RxJava、Retrofit、Realm、单Activity多Fragment、多进程等的实践。项目code中有实际项目使用的部分源码。</p>
+</blockquote>
+<p><img src="https://github.com/magicsu/android-samples/blob/master/screenshot/Intro.jpg?raw=true" alt="screenshot00"></p>
+<h2 id="RxJava"><a href="#RxJava" class="headerlink" title="RxJava"></a>RxJava</h2><p>学习了RxJava，懂得了很多道理，但依旧不会用？<br>让我们先来举几个实际常用的例子。</p>
+<h3 id="线程切换"><a href="#线程切换" class="headerlink" title="线程切换"></a>线程切换</h3><p>举个例子，我们想从服务端获取一个图片链接(耗时操作)，然后使用该链接生成一个二维码图片（耗时操作），然后想在UI主线程显示出来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">RequestManager.getApiManager()</span><br><span class="line">        .getQRCodeUrl()                // 网络获取要生成的二维码内容（模拟耗时操作）</span><br><span class="line">        .subscribeOn(Schedulers.io())  // 指定被观察者执行线程</span><br><span class="line">        .filter(new Func1&lt;StringResponse, Boolean&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Boolean call(StringResponse response) &#123;</span><br><span class="line">                return response.isSuccess() &amp;&amp; response.getData() != null;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .map(new Func1&lt;StringResponse, String&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public String call(StringResponse response) &#123;</span><br><span class="line">                return response.getData();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .filter(new Func1&lt;String, Boolean&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Boolean call(String s) &#123;</span><br><span class="line">                return StringUtils.isNotEmpty(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .observeOn(Schedulers.io())    // 将接下来的执行环境切换为IO线程</span><br><span class="line">        .map(new Func1&lt;String, Bitmap&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Bitmap call(String s) &#123;</span><br><span class="line">            	 // 生成二维码图片（模拟耗时操作）</span><br><span class="line">                return ZXingUtils.encodeQRCodeImage(s, 500, 500);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .filter(new Func1&lt;Bitmap, Boolean&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Boolean call(Bitmap bitmap) &#123;</span><br><span class="line">                return bitmap != null;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .observeOn(AndroidSchedulers.mainThread())  // 将接下来的执行环境切换为主线程</span><br><span class="line">        .subscribe(new Subscriber&lt;Bitmap&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onCompleted() &#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void onError(Throwable throwable) &#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void onNext(Bitmap bitmap) &#123;</span><br><span class="line">            	 // 切换为主线程显示图片</span><br><span class="line">                mIvQRCode.setImageBitmap(bitmap);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<p>由上面可以看到，我们通过使用操作符将事件分解，通过subscribeOn（）和observeOn（）方法切换代码执行的线程环境。对于线程切换，我们只需要掌握以下两个方法：</p>
+<ul>
+<li><p>subscribeOn（）它指示Observable在一个指定的调度器上创建（只作用于被观察者创建阶段）。只能指定一次，如果指定多次则以第一次为准</p>
+</li>
+<li><p>observeOn（）指定在事件传递（加工变换）和最终被处理（观察者）的发生在哪一个调度器。可指定多次，每次指定完都在下一步生效。</p>
+</li>
+</ul>
+<h3 id="按钮防抖动"><a href="#按钮防抖动" class="headerlink" title="按钮防抖动"></a>按钮防抖动</h3><p>这个小功能平时在很多地方都有用到，可以有效防止短时间内多次触发造成的异常情况。如果需要RxJava实现这个功能，需要使用RxBinding将点击事件转化为一个Observable，接着，使用 throttleFirst 操作符来解决按钮被多次点击的问题。throttleFirst允许设置一个时间长度，之后它会发送固定时间长度内的第一个事件，而屏蔽其它事件，在间隔达到设置的时间后，可以再发送下一个事件，如下图所示。</p>
+<p><img src="http://img1.tuicool.com/uAjQ7fm.png!web" alt="throttleFirst"></p>
+<p>实例代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">RxView.clicks(mBtnLogIn)</span><br><span class="line">        .throttleFirst(500, TimeUnit.MILLISECONDS)  // 每500ms内取第一次点击事件</span><br><span class="line">        .subscribe(new Action1&lt;Void&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void call(Void aVoid) &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<p>注意：在使用时，切记，在页面创建时执行以上代码完成事件绑定，而非将以上代码放入按钮监听回调中，否则会出现第一次触发时连续点击按钮两次才会有响应的”奇怪现象”。</p>
+<h3 id="多数据源加载数据处理"><a href="#多数据源加载数据处理" class="headerlink" title="多数据源加载数据处理"></a>多数据源加载数据处理</h3><p>在实际的项目中，经常会碰到一处数据可能要从多数据源加载的情况。比如一个列表数据，可能会先从内存缓存中尝试加载，如果没有或者过期，接着从本地数据库中加载，如果还没有有效数据，需要从网络获取。</p>
+<p>我们可以看下如下使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Observable&lt;Data&gt; memory = ...;   </span><br><span class="line">Observable&lt;Data&gt; disk = ...;   </span><br><span class="line">Observable&lt;Data&gt; network = ...; </span><br><span class="line"> </span><br><span class="line">Observable&lt;Data&gt; source = Observable   </span><br><span class="line">		  .concat(memory, disk, network) </span><br><span class="line">		  .first();</span><br></pre></td></tr></table></figure>
+<p>我们可以按照以上方式完成一个简单的多数据源获取数据代码，但是</p>
+<p>下面将展示一个实际使用例子示例代码，有一个订单列表，多数情况下只需要加载缓存数据，偶尔可能需要刷新缓存数据，列表中的某个字段可能会有一些更新，可以根据需要设置是否需要获取缓存数据。完整代码见[todo]。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">private Map&lt;String, FamilyOrder&gt; mCachedOrders;</span><br><span class="line">private boolean mCacheIsDirty;</span><br><span class="line"></span><br><span class="line">// 获取订单列表数据</span><br><span class="line">@Override</span><br><span class="line">public Observable&lt;List&lt;FamilyOrder&gt;&gt; getOrders(int pageNum, int pageSize) &#123;</span><br><span class="line">    if (mCachedOrders != null &amp;&amp; !mCacheIsDirty) &#123;</span><br><span class="line">        Logger.d(TAG, &quot;&lt;&lt;&lt;&lt; mCachedOrders != null &amp;&amp; !mCacheIsDirty &lt;&lt;&lt;&lt;&quot;);</span><br><span class="line">        return Observable.from(mCachedOrders.values()).toList();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        mCachedOrders = new HashMap&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Observable&lt;List&lt;FamilyOrder&gt;&gt; localOrders = mLocalDataSource.getOrders(pageNum, pageSize);</span><br><span class="line"></span><br><span class="line">    Observable&lt;List&lt;FamilyOrder&gt;&gt; remoteOrders = mRemoteDataSource</span><br><span class="line">            .getOrders(pageNum, pageSize, isWaitPay) // 注意，这里的线程操作环境已经为IO线程</span><br><span class="line">            .filter(new Func1&lt;List&lt;FamilyOrder&gt;, Boolean&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public Boolean call(List&lt;FamilyOrder&gt; familyOrders) &#123;</span><br><span class="line">                    return familyOrders != null;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .doOnNext(new Action1&lt;List&lt;FamilyOrder&gt;&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void call(List&lt;FamilyOrder&gt; familyOrders) &#123;</span><br><span class="line">                    // 数据库缓存</span><br><span class="line">                    saveOrUpdateFamilyOrders(familyOrders);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .flatMap(new Func1&lt;List&lt;FamilyOrder&gt;, Observable&lt;FamilyOrder&gt;&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public Observable&lt;FamilyOrder&gt; call(List&lt;FamilyOrder&gt; familyOrders) &#123;</span><br><span class="line">                		// 将普通数据集合遍历包装成单独的Observable</span><br><span class="line">                    return Observable.from(familyOrders);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .doOnNext(new Action1&lt;FamilyOrder&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void call(FamilyOrder familyOrder) &#123;</span><br><span class="line">                    // 内存缓存</span><br><span class="line">                    mCachedOrders.put(familyOrder.getOrderId(), familyOrder);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .toList()</span><br><span class="line">            .doOnCompleted(new Action0() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void call() &#123;</span><br><span class="line">                    mCacheIsDirty = false;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">    if (mCacheIsDirty) &#123;</span><br><span class="line">        return remoteOrders;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return Observable.concat(localOrders, remoteOrders)</span><br><span class="line">        	  .first(new Func1&lt;List&lt;FamilyOrder&gt;, Boolean&gt;() &#123;</span><br><span class="line">	             @Override</span><br><span class="line">	             public Boolean call(List&lt;FamilyOrder&gt; familyOrders) &#123;</span><br><span class="line">	                 return familyOrders != null;  // 亦可在这里判断数据是否过期、有效</span><br><span class="line">	             &#125;</span><br><span class="line">	         &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用这种模式的关键在与理解concat操作符，需要知道concat只有需要数据的时候才会订阅所有的Observable数据源，而且所有的数据源是顺序串联的队列，以concat(localOrders, remoteOrders）为例，如果localOrders存在有效数据，remoteOrders就不会被访问，因为first()/takeFirst()操作符会提前停止队列，若没有，则会依次执行下面的数据源。</p>
+<p>另外，建议在使用时根据需要考虑将某些数据操作“统筹处理”，比如封装一个DataReposity，实现数据操作接口，将多重数据源操作封装到一起。完整代码<a href="https://github.com/magicsu/android-samples/blob/master/code/FamilyOrdersRepository.java" target="_blank" rel="noopener">传送门</a>。</p>
+<h2 id="Retrofit"><a href="#Retrofit" class="headerlink" title="Retrofit"></a>Retrofit</h2><p>实际项目使用时，我们可以将Retrofit封装一下，使用单例模式调用。除了要设置基础的网络的相应的超时时间、baseUrl、使用的序列化库的ConverterFactory。结合RxJava使用还要设置CallAdapterFactory。</p>
+<h3 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h3><p>很多应用都有这种需求，对于客户端请求进行Token校验，如果token失效可能需要进行其他操作，如重新登录等。此时，使用Retrofit可以很方便的对所有网络请求添加拦截器，在拦截器中通过覆写intercept方法可以很方便的做进一步处理。</p>
+<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><p>另外，Gson和Realm使用时，很可能会遇到Gson在对RealmObject对象操作时出现循环引用的异常，造成堆栈溢出，在对Retrofit配置ConverterFactory时需要先对Gson设置setExclusionStrategies覆写shouldSkipField方法。</p>
+<p>详细使用可参考如下代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">public class RequestManager &#123;</span><br><span class="line">    private ApiManager apiManager;</span><br><span class="line"></span><br><span class="line">    private static class RequestManagerHolder &#123;</span><br><span class="line">        final static RequestManager instance = new RequestManager();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static ApiManager getApiManager() &#123;</span><br><span class="line">        return RequestManagerHolder.instance.apiManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public RequestManager() &#123;</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void init() &#123;</span><br><span class="line">        OkHttpClient.Builder client = new OkHttpClient.Builder();</span><br><span class="line">        client.connectTimeout(AppConfig.NET_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS);</span><br><span class="line">        client.readTimeout(AppConfig.NET_READ_TIMEOUT, TimeUnit.MILLISECONDS);</span><br><span class="line"></span><br><span class="line">        // Token验证拦截器</span><br><span class="line">        client.addInterceptor(new TokenInterceptor());  </span><br><span class="line"></span><br><span class="line">        // 日志(可根据不同的环境选择不同的日志输出，方便调试)</span><br><span class="line">        if (AppConfig.DEBUG) &#123;</span><br><span class="line">            client.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            client.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // Gson &amp; Realm bug fixes: https://realm.io/docs/java/0.77.0/#gson</span><br><span class="line">        Gson gson = new GsonBuilder()</span><br><span class="line">                .setExclusionStrategies(new ExclusionStrategy() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public boolean shouldSkipField(FieldAttributes f) &#123;</span><br><span class="line">                        // 跳过RealmObject、Drawable造成的循环引用异常</span><br><span class="line">                        return f.getDeclaringClass().equals(RealmObject.class) || f.getDeclaringClass().equals(Drawable.class);</span><br><span class="line">                    &#125;</span><br><span class="line">                    @Override</span><br><span class="line">                    public boolean shouldSkipClass(Class&lt;?&gt; clazz) &#123;</span><br><span class="line">                        return false;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .create();</span><br><span class="line"></span><br><span class="line">        Retrofit retrofit = new Retrofit.Builder()</span><br><span class="line">                .baseUrl(AppConfig.BASE_URL)</span><br><span class="line">                .client(client.build())</span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create(gson))</span><br><span class="line">                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        apiManager = retrofit.create(ApiManager.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public interface ApiManager &#123;</span><br><span class="line"></span><br><span class="line">    @GET(&quot;app/checkUpdate&quot;)</span><br><span class="line">    Observable&lt;CheckUpdateResponse&gt; checkUpdate();</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以通过如下方法进行调用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">RequestManager.getApiManager()</span><br><span class="line">    .checkUpdate()</span><br><span class="line">    .subscribeOn(Schedulers.io())</span><br><span class="line">    .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">    .subscribe(new Subscriber&lt;CheckUpdateResponse&gt;() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void onCompleted() &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void onError(Throwable e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void onNext(final CheckUpdateResponse response) &#123;</span><br><span class="line">            // do something</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Realm"><a href="#Realm" class="headerlink" title="Realm"></a>Realm</h2><p>对于Realm的使用，官方有非常详细的<a href="https://realm.io/docs/java/latest/" target="_blank" rel="noopener">文档</a>。</p>
+<p>对于为什么要使用Realm，除了对RxJava的先天支持（可能仅仅这一条你就毫无抵抗地爱上了她），另外Realm查询速度灰常快，内存占用低，API使用简单等等，都会让你爱不释手。</p>
+<p>但是，Realm也有自身的限制，比如在多线程环境下使用Realm数据，对于第一次使用的人来说，会有一脸懵逼的感觉。但是官方文档在这方面做得十分友好，既然问题不可避免，那就教会大家如何正确使用。关于多线程使用，这个有个<a href="https://github.com/realm/realm-java/tree/master/examples/threadExample" target="_blank" rel="noopener">传送门</a>。在使用的过程中一定要多加注意。另外切记注意Relam的close，避免造成内存泄露。</p>
+<h3 id="使用示例-1"><a href="#使用示例-1" class="headerlink" title="使用示例"></a>使用示例</h3><p>这是一个官方示例，和RxJava搭配使用。Realm从本地数据库中异步查询本地用户，然后将查询数据通过flatMap操作符依次查询用户的Github信息，将最终查询信息展示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Realm realm = Realm.getDefaultInstance();</span><br><span class="line">GitHubService api = retrofit.create(GitHubService.class);</span><br><span class="line">realm.where(Person.class).isNotNull(&quot;username&quot;).findAllAsync().asObservable()</span><br><span class="line">    .filter(persons.isLoaded)</span><br><span class="line">    .flatMap(persons -&gt; Observable.from(persons))</span><br><span class="line">    .flatMap(person -&gt; api.user(person.getGithubUserName())</span><br><span class="line">    .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">    .subscribe(user -&gt; showUser(user));</span><br></pre></td></tr></table></figure>
+<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><p>对于Realm的调试，我们可以使用官方的数据库管理软件，RealmBrowser，用来查看数据表。</p>
+<p>对于新手来说，第一件事就是如何获取Realm文件。<br>我们可以通过如下代码将Realm文件copy到手机中，然后通过adb push命令将文件传到电脑中，使用RealmBrowser查看。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public static void copyRealmFile2SDCard() &#123;</span><br><span class="line">    Realm realm = null;</span><br><span class="line">    try &#123;</span><br><span class="line">        realm = Realm.getDefaultInstance();</span><br><span class="line">        File f = new File(realm.getPath());</span><br><span class="line">        if (f.exists()) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                // 将文件拷贝到手机指定位置</span><br><span class="line">                FileUtils.copy(f, new File(Environment.getExternalStorageDirectory() + File.separator + &quot;default.realm&quot;));</span><br><span class="line">            &#125; catch (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        if (realm != null)</span><br><span class="line">            realm.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="生命周期管理"><a href="#生命周期管理" class="headerlink" title="生命周期管理"></a>生命周期管理</h2><p>写到这里，一定要提醒一点的是RxJava生命周期的管理。不管是使用Retrofit进行网络请求，还是通过Realm获取本地数据，都可以将返回的Subscription加入到CompositeSubscription中进行管理，使用unsubscribe()可以及时有效的停止接收事件，避免内存泄露异常。</p>
+<p>我们可以在BaseActivity/BaseFragment中进行如下处理。可参考如下代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public BaseFragment extends Fragment &#123;</span><br><span class="line">	protected CompositeSubscription mSubscriptions = new CompositeSubscription();</span><br><span class="line">		</span><br><span class="line">	@Override</span><br><span class="line">	public void onDestroy() &#123;</span><br><span class="line">	    super.onDestroy();</span><br><span class="line">	    if (mSubscriptions != null &amp;&amp; !mSubscriptions.isUnsubscribed()) &#123;</span><br><span class="line">	        // 释放资源</span><br><span class="line">	        mSubscriptions.unsubscribe();</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	....</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public DemoFragment extends BaseFragment &#123;</span><br><span class="line"></span><br><span class="line">	....</span><br><span class="line">	private void checkUpdate() &#123;</span><br><span class="line">		 // 每个subscribe 函数都会返回一个Subscription</span><br><span class="line">		 // 添加到CompositeSubscription管理</span><br><span class="line">		 mSubscriptions.add(RequestManager.getApiManager()</span><br><span class="line">                .checkUpdate()</span><br><span class="line">                ...</span><br><span class="line">                ));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ToDo"><a href="#ToDo" class="headerlink" title="ToDo"></a>ToDo</h2><ul>
+<li>单Activity多Fragment的使用及注意项</li>
+<li>Realm、Retrofit、Realm使用细化</li>
+</ul>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><h3 id="实施成果与感受"><a href="#实施成果与感受" class="headerlink" title="实施成果与感受"></a>实施成果与感受</h3><p>这几个开源项目搭配起来使用，是为了解决之前旧项目的一些问题。比如程序内存占用高、性能低，代码耦合严重、存在大量模板代码、以及程序稳定性差。了解分析后，决定参荐<a href="https://github.com/googlesamples/android-architecture/" target="_blank" rel="noopener">googlesamples/android-architecture</a>的todo‑mvp‑rxjava项目，结合retrofit、realm、eventbus的使用，同时，为了提升页面的流畅度、内存占用，使用「单activity多fragment」的UI框架，开发完成后，实际使用效果检测很流畅，主要体现在网络请求、数据库操作、页面切换流畅度方面，内存占用也比较满意。</p>
+<h3 id="关于保活"><a href="#关于保活" class="headerlink" title="关于保活"></a>关于保活</h3><p>另外，提一下程序保活，由于这个app需要常驻后台，这个关系到用户的切身利益，由于使用群体的特殊性，对保活要求更高。网上也要很多的保活措施，但是很多对于系统版本兼容、耗电等情况不尽人意。结合实践，觉得有两点很重要。一是多进程的使用，将后台服务模块与UI模块分离，保证后台服务进程较低的内存占用，二是，将后台服务进程进程提升为前台服务，提升进程优先级。还可以通过将应用退出后，主动kill掉UI进程，来降低手机内存占用，进一步降低服务进程被kill概率。另外，还可以采用“1像素activity”的方式去提升进程优先级，记得将activity的进程和要保活的进程设置为同一个process。另外，也希望大家采取克制的态度去使用各式各样的保活机制，很多保活机制对手机的电量、流量都有一定的影响，是的，我们要克制的达成目标。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-RxJava-Realm-Retrofit/" rel="tag"># Android,RxJava,Realm,Retrofit</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/02/项目开发随想-zero2one/" rel="prev" title="项目开发随想-zero2one">
+                项目开发随想-zero2one <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Sush" />
+            
+              <p class="site-author-name" itemprop="name">Sush</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RxJava"><span class="nav-number">1.</span> <span class="nav-text">RxJava</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#线程切换"><span class="nav-number">1.1.</span> <span class="nav-text">线程切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按钮防抖动"><span class="nav-number">1.2.</span> <span class="nav-text">按钮防抖动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多数据源加载数据处理"><span class="nav-number">1.3.</span> <span class="nav-text">多数据源加载数据处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Retrofit"><span class="nav-number">2.</span> <span class="nav-text">Retrofit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#拦截器"><span class="nav-number">2.1.</span> <span class="nav-text">拦截器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例"><span class="nav-number">2.2.</span> <span class="nav-text">使用示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Realm"><span class="nav-number">3.</span> <span class="nav-text">Realm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例-1"><span class="nav-number">3.1.</span> <span class="nav-text">使用示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调试"><span class="nav-number">3.2.</span> <span class="nav-text">调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期管理"><span class="nav-number">4.</span> <span class="nav-text">生命周期管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ToDo"><span class="nav-number">5.</span> <span class="nav-text">ToDo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在最后"><span class="nav-number">6.</span> <span class="nav-text">写在最后</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实施成果与感受"><span class="nav-number">6.1.</span> <span class="nav-text">实施成果与感受</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于保活"><span class="nav-number">6.2.</span> <span class="nav-text">关于保活</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sush</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
